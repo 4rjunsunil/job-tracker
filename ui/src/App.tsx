@@ -134,6 +134,7 @@ function App() {
   const [token, setToken] = useState<string | null>(readToken)
   const [loginForm, setLoginForm] = useState({ name: '', email: '', password: '' })
   const [loginError, setLoginError] = useState('')
+  const [pendingRequests, setPendingRequests] = useState(0)
   const [isSignUp, setIsSignUp] = useState(true)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<'All' | Status>('All')
@@ -143,6 +144,15 @@ function App() {
   const [editing, setEditing] = useState<Application | null>(null)
   const [form, setForm] = useState<ApplicationForm>(blankForm)
   const [notice, setNotice] = useState('')
+
+  async function apiFetch(input: RequestInfo | URL, init?: RequestInit) {
+    setPendingRequests((current) => current + 1)
+    try {
+      return await fetch(input, init)
+    } finally {
+      setPendingRequests((current) => Math.max(0, current - 1))
+    }
+  }
 
   useEffect(() => {
     localStorage.setItem('job-search-tracker-applications', JSON.stringify(applications))
@@ -169,7 +179,7 @@ function App() {
 
     async function fetchApplications() {
       try {
-        const response = await fetch(`${API_URL}/api/applications`, {
+        const response = await apiFetch(`${API_URL}/api/applications`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -254,7 +264,7 @@ function App() {
     try {
       const method = editing ? 'PUT' : 'POST'
       const url = editing ? `${API_URL}/api/applications/${editing.id}` : `${API_URL}/api/applications`
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -287,7 +297,7 @@ function App() {
     if (!token) return
 
     try {
-      const response = await fetch(`${API_URL}/api/applications/${id}`, {
+      const response = await apiFetch(`${API_URL}/api/applications/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -313,7 +323,7 @@ function App() {
 
     if (window.confirm(`Remove ${application.company} from your applications?`)) {
       try {
-        const response = await fetch(`${API_URL}/api/applications/${application.id}`, {
+        const response = await apiFetch(`${API_URL}/api/applications/${application.id}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -348,13 +358,18 @@ function App() {
       return
     }
 
+    if (password.length < 6) {
+      setLoginError('Password must be at least 6 characters.')
+      return
+    }
+
     const endpoint = isSignUp ? '/api/auth/register' : '/api/auth/login'
     const body = isSignUp
       ? { name: loginForm.name.trim() || TEST_USER.name, email, password }
       : { email, password }
 
     try {
-      const response = await fetch(`${API_URL}${endpoint}`, {
+      const response = await apiFetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -397,6 +412,7 @@ function App() {
   if (!user) {
     return (
       <div className="auth-screen">
+        {pendingRequests > 0 && <div className="api-loading-indicator" role="status"><span className="api-spinner" />Connecting to server...</div>}
         <div className="auth-card">
           <div className="auth-topbar">
             <div className="brand auth-brand" aria-label="Job Search Tracker home">
@@ -461,8 +477,11 @@ function App() {
                     placeholder="password123"
                     autoComplete={isSignUp ? 'new-password' : 'current-password'}
                     minLength={6}
+                      aria-invalid={loginForm.password.length > 0 && loginForm.password.length < 6}
+                      aria-describedby={loginForm.password.length > 0 && loginForm.password.length < 6 ? 'password-length-error' : undefined}
                     required
                   />
+                    {loginForm.password.length > 0 && loginForm.password.length < 6 && <small id="password-length-error" className="field-error">Password must be at least 6 characters.</small>}
                 </label>
               </div>
 
@@ -480,6 +499,7 @@ function App() {
 
   return (
     <div className="app-shell">
+      {pendingRequests > 0 && <div className="api-loading-indicator" role="status"><span className="api-spinner" />Loading...</div>}
       <aside className="sidebar">
         <a className="brand" href="#top" onClick={() => setActiveNav('Overview')} aria-label="Job Search Tracker home">
           <span className="brand-mark"><span /></span>
@@ -587,7 +607,7 @@ function App() {
                     <div className="interview-row" key={application.id}>
                       <div className="interview-date"><strong>{new Date(`${application.interviewDate}T12:00:00`).getDate()}</strong><span>{new Intl.DateTimeFormat('en', { month: 'short' }).format(new Date(`${application.interviewDate}T12:00:00`))}</span></div>
                       <div className="interview-details"><strong>{application.role}</strong><span>{application.company} · {application.location}</span></div>
-                      <span className="interview-time"><CalendarDays size={14} /> Chat</span>
+                      
                     </div>
                   ))}
                 </div>
