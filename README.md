@@ -1,6 +1,7 @@
 # Job Search Tracker
 
 A job application tracking dashboard built with React + TypeScript on the frontend and Node.js + Express on the backend. The app helps users save job applications, track progress across statuses, monitor interview dates, and review summary metrics.
+Deployed -> https://job-tracker-psi-inky.vercel.app/
 
 ## Tech Stack
 
