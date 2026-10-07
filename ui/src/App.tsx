@@ -390,7 +390,7 @@ function App() {
       setToken(responseBody.token || null)
       setLoginError('')
       setLoginForm({ name: '', email: '', password: '' })
-      setNotice(isSignUp ? 'Account created successfully.' : 'Welcome back, Jamie.')
+      setNotice(isSignUp ? 'Account created successfully.' : `Welcome back, ${nextUser.name}.`)
     } catch (error) {
       setLoginError(error instanceof Error ? error.message : 'Authentication failed. Please try again.')
     }
@@ -412,7 +412,7 @@ function App() {
   if (!user) {
     return (
       <div className="auth-screen">
-        {pendingRequests > 0 && <div className="api-loading-indicator" role="status"><span className="api-spinner" />Connecting to server...</div>}
+        {pendingRequests > 0 && <div className="api-loading-overlay"><div className="api-loading-indicator" role="status" aria-live="polite"><span className="api-spinner" />Connecting to server...</div></div>}
         <div className="auth-card">
           <div className="auth-topbar">
             <div className="brand auth-brand" aria-label="Job Search Tracker home">
@@ -499,7 +499,7 @@ function App() {
 
   return (
     <div className="app-shell">
-      {pendingRequests > 0 && <div className="api-loading-indicator" role="status"><span className="api-spinner" />Loading...</div>}
+      {pendingRequests > 0 && <div className="api-loading-overlay"><div className="api-loading-indicator" role="status" aria-live="polite"><span className="api-spinner" />Loading...</div></div>}
       <aside className="sidebar">
         <a className="brand" href="#top" onClick={() => setActiveNav('Overview')} aria-label="Job Search Tracker home">
           <span className="brand-mark"><span /></span>
