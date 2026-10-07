@@ -471,11 +471,7 @@ function App() {
               <button type="submit" className="primary-button auth-button">{isSignUp ? 'Create account' : 'Sign in'}</button>
             </form>
 
-            <div className="auth-footer">
-              <span>Test account</span>
-              <strong>{TEST_USER.email}</strong>
-              <small>Password: {TEST_USER.password}</small>
-            </div>
+            
           </div>
         </div>
       </div>
