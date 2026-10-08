@@ -474,6 +474,9 @@
 .toast-check { display: grid; width: 19px; height: 19px; place-items: center; border-radius: 50%; background: #e6f2e8; color: #43805a; font-size: 12px; }
 .api-loading-overlay { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; background: rgba(26,38,32,.3); backdrop-filter: blur(2px); cursor: wait; }
 .api-loading-indicator { display: flex; align-items: center; gap: 10px; min-width: 190px; justify-content: center; padding: 16px 20px; border: 1px solid #d8e7dc; border-radius: 8px; background: #fff; box-shadow: 0 8px 28px rgba(37,57,45,.18); color: #43594b; font-size: 12px; }
+.api-loading-copy { display: grid; max-width: min(340px, calc(100vw - 100px)); gap: 4px; }
+.api-loading-copy strong { font-size: 12px; font-weight: 600; }
+.api-loading-copy span { color: #728078; font-size: 11px; line-height: 1.45; }
 .api-spinner { width: 14px; height: 14px; flex: 0 0 14px; border: 2px solid #d8e7dc; border-top-color: #31594c; border-radius: 50%; animation: api-spin .7s linear infinite; }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes modal-in { from { opacity: 0; transform: translateY(7px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }

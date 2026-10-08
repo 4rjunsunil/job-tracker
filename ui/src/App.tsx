@@ -412,7 +412,7 @@ function App() {
   if (!user) {
     return (
       <div className="auth-screen">
-        {pendingRequests > 0 && <div className="api-loading-overlay"><div className="api-loading-indicator" role="status" aria-live="polite"><span className="api-spinner" />Connecting to server...</div></div>}
+        {pendingRequests > 0 && <div className="api-loading-overlay"><div className="api-loading-indicator" role="status" aria-live="polite"><span className="api-spinner" /><div className="api-loading-copy"><strong>Connecting to the server...</strong><span>Our free Render server may be waking up after inactivity. This can take around 30–60 seconds. Please keep this page open.</span></div></div></div>}
         <div className="auth-card">
           <div className="auth-topbar">
             <div className="brand auth-brand" aria-label="Job Search Tracker home">
